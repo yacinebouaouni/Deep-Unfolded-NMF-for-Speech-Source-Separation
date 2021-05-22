@@ -1,0 +1,12 @@
+ 
+ 1. NMF Part already implemented in the first paper " Single source separation using NMF + DNNN ..."
+ 
+ 2. Implementation from scratch using Numpy.
+    - Possibility of exploiting RNN cell ??
+    - Otherwise,  designing customizable architecture ( the nested loop function of unfolded warm start ISTA )
+        - Properly define the input of the DNN.
+        - Preprocessing data over time axis.
+        -  Writing the loss function ( quadratic ).
+        - Optimizer already implemented in torch.optim.
+    
+ 
