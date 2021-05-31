@@ -1,0 +1,7 @@
+## Best configuration for Unfolded ISTA:
+
+- MSE
+- alpha = 100
+- K = 2
+- mask = 0.5
+- Sigmoid on W  ( in ISTA algorithm + mask ) and H ( at every k )
