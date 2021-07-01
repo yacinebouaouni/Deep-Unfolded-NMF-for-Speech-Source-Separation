@@ -3,7 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from scipy.signal import butter, lfilter, freqz
-
+from sklearn.utils.extmath import randomized_svd,squared_norm
+import math
+import numpy as np
 from numpy import linalg as LA
 
 def Viz_Y(t,f,Y, vmin=0, vmax=20):
@@ -169,3 +171,48 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
     b, a = butter_lowpass(cutoff, fs, order=order)
     y = lfilter(b, a, data)
     return y
+
+
+def norm(x):
+  return math.sqrt(squared_norm(x))
+def nndsvd(X,n_components):  
+    eps = 1e-7 
+    U, S, V = randomized_svd(X, n_components, random_state=7)
+    W = np.zeros_like(U)
+    H = np.zeros_like(V)
+
+    # The leading singular triplet is non-negative
+    # so it can be used as is for initialization.
+    W[:, 0] = np.sqrt(S[0]) * np.abs(U[:, 0])
+    H[0, :] = np.sqrt(S[0]) * np.abs(V[0, :])
+
+    for j in range(1, n_components):
+        x, y = U[:, j], V[j, :]
+
+        # extract positive and negative parts of column vectors
+        x_p, y_p = np.maximum(x, 0), np.maximum(y, 0)
+        x_n, y_n = np.abs(np.minimum(x, 0)), np.abs(np.minimum(y, 0))
+
+        # and their norms
+        x_p_nrm, y_p_nrm = norm(x_p), norm(y_p)
+        x_n_nrm, y_n_nrm = norm(x_n), norm(y_n)
+
+        m_p, m_n = x_p_nrm * y_p_nrm, x_n_nrm * y_n_nrm
+
+        # choose update
+        if m_p > m_n:
+            u = x_p / x_p_nrm
+            v = y_p / y_p_nrm
+            sigma = m_p
+        else:
+            u = x_n / x_n_nrm
+            v = y_n / y_n_nrm
+            sigma = m_n
+
+        lbd = np.sqrt(S[j] * sigma)
+        W[:, j] = lbd * u
+        H[j, :] = lbd * v
+
+    W[W < eps] = 0
+    H[H < eps] = 0
+    return W,H
