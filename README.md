@@ -7,7 +7,10 @@ This project is an implementation of the paper "Deep Recurrent NMF for Speech Se
 
 In this project we propose a full implementation in Python 3 (No Matlab) that can be used with wav files (more general).
 
-We have updated the original algorithm in different ways to increase the temporal consistency of the audio data, the description in details is given in the final report.
+We have updated the original algorithm in different ways to increase the temporal consistency of the audio data, the description in details is given in the final report. This approach allows a better generelization and interpretation of what the model is performing compared to SOTA deep learning.
+
+![](/Images/method.jpg)
+
 @article{DBLP:journals/corr/abs-1709-07124,
   author    = {Scott Wisdom and
                Thomas Powers and
